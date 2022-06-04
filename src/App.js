@@ -8,20 +8,38 @@ import Card from 'react-bootstrap/Card'
  
 function App() {
   const [result, setResult ]=useState("");
+  const [ticketList, setTicketList ]=useState([]);
   const inputRef = useRef(null);
 
   useEffect(()=>inputRef.current.focus());
+
   function handleClick(e){
-    setResult (result + e.target.name);
-    
+    result.length < 6 && setResult (result + e.target.name); 
   }
+  
   function backspace(){
     setResult(result.slice(0,result.length-1));
-}
-function clear(){
-setResult("");
+  }
 
-}
+  function clear(){
+    setResult("");
+  }
+
+  function addTicket(){
+    if(result.length===6){
+      let ticket = result;
+      ticketList.push(ticket);
+      setResult("");
+    }
+  }
+
+
+  function removeTicket(index){
+    let tempticketList = [...ticketList]
+    tempticketList.splice(index,1);
+    setTicketList(tempticketList);
+  }
+
   return (
      <div className="calc-app">
        <from>
@@ -48,23 +66,19 @@ setResult("");
         <button id="bacspace" onClick={backspace}><FiDelete/></button>
         <button name="0" onClick={handleClick}>0</button>
         <button id="clear" onClick={clear}><AiFillDelete/></button>
-        <button id="addticket" ><VscDiffAdded/>Add Ticket</button>
+        <button id="addticket" onClick={addTicket}><VscDiffAdded/>Add Ticket</button>
       </div>
         <div className="mt-4">
           <p>You Selected Tickets </p>
         <div className="row">
-        <Card className="w-50 mx-0"> <AiFillDelete className="delete"/>
-          <Card.Body> 
-            <p>Ticket #0</p>
-
-          </Card.Body>
-        </Card>
-        <Card className="w-50"><AiFillDelete className="delete"onClick={clear}/>
-          <Card.Body> 
-            <p>Ticket #1</p>
-
-          </Card.Body>
-        </Card>
+        {ticketList.map((ticket,index)=>
+          <Card className="w-50 mx-0"> <AiFillDelete onClick={()=>{removeTicket(index)}} className="delete"/>
+            <Card.Body> 
+              <p>Ticket no. {index+1}</p>
+              <p> {ticket} </p>              
+            </Card.Body>
+          </Card>
+        )}
 
         </div>
         </div>
